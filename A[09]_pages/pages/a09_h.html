@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!-- 引入 echarts.js -->
+    <link rel="stylesheet" href="../src/css/layui.css">
+    
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+
+
+</head>
+<style>
+    body{padding: 10px;}
+    </style>
+<body>
+
+
+<form id="a" class="layui-form layui-form-pane1" action="" lay-filter="first" style="margin-left: 35%;">
+  
+<div class="select"> 
+    <div class="layui-input-inline" >
+        <div class="layui-form-item">
+             <div class="layui-input-block" style="width:40%;">
+            <div class="layui-bg-black">
+            <select name="select1" lay-filter="select1">
+                <option value="-1">请选择</option>
+                <option value="0">一号线</option>
+                <option value="1">二号线</option>
+                <option value="2">三号线</option>
+                <option value="3">四号线</option>
+                <option value="4">五号线</option>
+                <option value="5">十号线</option>
+                <option value="6">十一号线</option>
+                <option value="7">十二号线</option>
+          </select>
+        </div>
+      </div>
+        </div>
+    </div>
+    <div class="layui-input-inline">
+        <div class="layui-form-item">
+           <div class="layui-input-block" style="width:45%;">
+            <div class="layui-bg-black">
+                <select name="select" lay-filter="select">
+                    <option value="-1">请选择</option>
+                    <option value="1">sta156</option>
+                    <option value="2">sta61</option>
+                    <option value="3">sta50</option>
+                    <option value="4">sta119</option>
+                    <option value="5">sta66</option>
+                    <option value="6">sta12</option>
+                    <option value="7">sta161</option>
+                    <option value="8">sta21</option>
+                    <option value="9">sta133</option>
+                    <option value="10">sta22</option>
+                    <option value="11">sta138</option>
+                    <option value="12">sta41</option>
+                    <option value="13">sta30</option>
+                    <option value="14">sta67</option>
+                    <option value="15">sta144</option>
+                    <option value="16">sta29</option>
+                    <option value="17">sta126</option>
+                    <option value="18">sta40</option>
+                    <option value="19">sta131</option>
+                    <option value="20">sta39</option>
+                    <option value="21">sta100</option>
+                    <option value="22">sta167</option>
+                    <option value="23">sta113</option>
+                    <option value="24">sta141</option>
+                    <option value="25">sta142</option>
+                    <option value="26">sta158</option>
+                    <option value="27">sta44</option>
+                    <option value="28">sta117</option>
+                    <option value="29">sta147</option>
+                    <option value="30">sta42</option>
+                    <option value="31">sta35</option>
+                    <option value="32">sta109</option>
+                    <option value="33">sta33</option>
+                    <option value="34">sta112</option>
+                    <option value="35">sta153</option>
+                    <option value="36">sta125</option>
+                    <option value="37">sta121</option>
+                    <option value="38">sta11</option>
+          </select>
+
+    </div>
+</div>
+         </div>
+    </div>
+</div>
+
+    </form>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div class="layui-form-item">
+        <div class="layui-input-inline">
+            
+           <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    
+    <div id="main" style="width:1000px;height:340px;margin-left: 90%;" ></div>
+        </div>
+        <div class="layui-input-inline">
+              <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    
+    <div id="main2" style="width:1000px;height:340px;margin-left:-40%;" ></div>
+        </div>
+       
+    
+    </div>
+    
+
+
+    <div class="text">
+        <li style="color: aliceblue;width: 80%;margin-left: 10%;">
+            <blockquote class="layui-elem-quote" style="line-height:30px;">选定某行政区，查看该行政区的进出站乘客情况，可明了的看到乘客的年龄结构柱状图，20-29岁的用户最多且不可超越，然后依次是30-39岁，40-49岁，50-59岁的用户。青年人在轨道出行中占有重要的地位。不同行政区，各年龄占比不同，可考虑：该行政区有大型商圈、大型办公区、大学城、老城区等情况。
+        </blockquote> 
+       </li>
+    </div>
+    
+    
+  
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.js"></script>
+    <script src="../src/layui.js"></script>
+<script>
+
+  var category = ['6:00','7:00','8:00','9:00','10:00','11:00',
+'12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00',
+'20:00','21:00','22:00'];
+var url_bar=new Array();
+    for(var k=0;k<3;k++){ //一维长度为i,i为变量，可以根据实际情况改变
+          url_bar[k]="../../json/h/y1_"+String(k+1)+".json";//声明二维，每一个一维数组里面的一个元素都是一个数组；       
+    } 
+console.log('url',url_bar);
+
+        var chartDom = document.getElementById('main');
+        var myChart = echarts.init(chartDom);
+
+      layui.use(['form', 'layedit', 'laydate'], function(){
+           
+        var form = layui.form,
+            table=layui.table,
+            $=layui.jquery;
+       // 让绑定在select的change事件触发
+       form.on('select(select1)', function(data1){ 
+            var val1=data1.value;
+            console.info(val1); 
+            _ajax(val1);
+  })
+  form.on('select(select)', function(data){   
+            var val=data.value;
+            console.info(val); 
+            ajax2();
+            _ajax2(val);
+
+            })
+
+function ajax2(){
+
+    document.getElementById('main').innerHTML="";
+}
+function ajax3(){
+
+document.getElementById('main2').innerHTML="";
+}
+function _ajax2(k){
+
+    var dom = document.getElementById("main2");
+    var myChart2 = echarts.init(dom);
+    var option2;
+
+
+
+    // Generate data
+    var category = ['6:00','7:00','8:00','9:00','10:00','11:00',
+    '12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00',
+    '20:00','21:00','22:00'];
+    var lineData = [4,10,11,12,6,10,20,19,22,25,26,37,37,24,22,29,14];
+    var barData = [4,10,11,12,6,10,20,19,22,25,26,37,37,24,22,29,14];
+
+
+
+    // option
+    option2 = {
+      //  backgroundColor: '#0f375f',
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        
+        xAxis: {
+            data: category,
+            axisLine: {
+                lineStyle: {
+                    color: '#ccc'
+                }
+            }
+        },
+        yAxis: {
+            splitLine: {show: false},
+            axisLine: {
+                lineStyle: {
+                    color: '#FFFFFF'
+                }
+            }
+        },
+        series: [{
+            name: '人数',
+            type: 'line',
+            smooth: true,
+            showAllSymbol: true,
+            symbol: 'emptyCircle',
+            symbolSize: 8,
+            color:'rgba(66,237,200)',
+            data: lineData
+        }, {
+            name: '人数',
+            type: 'bar',
+            barWidth: 10,
+            itemStyle: {
+                barBorderRadius: 5,
+                color: new echarts.graphic.LinearGradient(
+                    0, 0, 0, 1,
+                    [
+                        {offset: 0, color: '#14c8dc'},
+                        {offset: 1, color: '#43eec7'}
+                    ]
+                )
+            },
+            data: barData
+        }, ]
+    };
+
+    if (option2 && typeof option2 === 'object') {
+        myChart2.setOption(option2);
+    }
+
+}
+
+
+
+ function _ajax(k) {
+     console.log(k),
+    $.ajax({
+        url: url_bar[k],
+        type: 'get',
+        success: function(res) {
+          
+          var line=res; 
+        var option;
+          
+
+
+// option
+option = {
+    //backgroundColor: '#0f375f',
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+            type: 'shadow'
+        }
+    },
+    xAxis: {
+        data: category,
+        axisLine: {
+            lineStyle: {
+                color: '#ccc'
+            }
+        }
+    },
+    yAxis: {
+        splitLine: {show: false},
+        axisLine: {
+            lineStyle: {
+                color: '#FFFFFF'
+            }
+        }
+    },
+    series: [{
+        name: '人数',
+        type: 'line',
+        smooth: true,
+        showAllSymbol: true,
+        symbol: 'emptyCircle',
+        symbolSize: 8,
+        color:'rgba(66,237,200)',
+        data: line
+    }, {
+        name: '人数',
+        type: 'bar',
+        barWidth: 10,
+        itemStyle: {
+            barBorderRadius: 5,
+            color: new echarts.graphic.LinearGradient(
+                0, 0, 0, 1,
+                [
+                    {offset: 0, color: '#14c8dc'},
+                    {offset: 1, color: '#43eec7'}
+                ]
+            )
+        },
+        data: line
+    }]
+};
+
+if (option && typeof option === 'object') {
+    myChart.setOption(option);
+}
+
+
+
+        }
+    });
+}
+            
+        
+
+       })
+  
+
+</script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!-- 引入 echarts.js -->
+    <link rel="stylesheet" href="../src/css/layui.css">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+
+
+</head>
+<body style="height: 200%; margin: 0">
+    
+
+<form id="a" class="layui-form layui-form-pane1" action="" lay-filter="first" style="margin-left: 45%;">
+  
+<div class="select"> 
+    <div class="layui-input-inline">
+        <div class="layui-form-item">
+           <div class="layui-input-block" style="width:40%;">
+            <div class="layui-bg-black">
+                <select name="select" lay-filter="select">
+                    <option value="-1">请选择</option>
+                    <option value="0">一号线</option>
+                    <option value="1">二号线</option>
+                    <option value="2">三号线</option>
+                    <option value="3">四号线</option>
+                    <option value="4">五号线</option>
+                    <option value="5">十号线</option>
+                    <option value="6">十一号线</option>
+                    <option value="7">十二号线</option>
+          </select>
+
+    </div>
+</div>
+         </div>
+    </div>
+</div>
+
+    </form>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    
+    <div id="main" style="width:1200px;height:350px;margin-left: 7%;" ></div>
+
+    
+    <div class="text">
+        <li style="color: aliceblue;width: 90%;margin-left: 10%;">
+            <blockquote class="layui-elem-quote" style="line-height:30px;margin-top: 5%;margin-left: 5%;">
+                选择某条轨道线路，即可查看该线路中各个站点的进站早晚高峰和出站早晚高峰时的客流量大小，可清晰的看出该线路中哪些站点在该时段的客流量压力比较大。
+        </blockquote> 
+       </li>
+    </div>
+    
+
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.js"></script>
+    <script src="../src/layui.js"></script>
+<script>
+    var url_x=new Array();
+    var url_y=new Array();
+     for(var j=0;j<8;j++){ 
+             url_x[j]="../../json/e/line"+String(j+1)+"_x.json";
+             url_y[j]="../../json/e/line"+String(j+1)+"_y.json";
+    }
+        console.log('url_',url_x);
+    var myChart = echarts.init(document.getElementById('main'));
+
+    layui.use(['form', 'layedit', 'laydate'], function(){
+           
+        var form = layui.form,
+            table=layui.table,
+            $=layui.jquery;
+       // 让绑定在select的change事件触发
+     form.on('select(select)', function(data){   
+        var val=data.value;
+        console.info(val); 
+        _ajax(val);
+     })
+        
+
+  })   
+  var data;
+  var xData;
+  var side = ["\u8fdb\u7ad9\u65e9\u9ad8\u5cf0", "\u8fdb\u7ad9\u665a\u9ad8\u5cf0","\u51fa\u7ad9\u65e9\u9ad8\u5cf0", "\u51fa\u7ad9\u665a\u9ad8\u5cf0"];
+   function _ajax(k) {
+    $.ajax({
+        url: url_x[k],
+        type: 'get',
+        success: function(res) {
+            xData=res;
+            console.log('x',xData);
+            $.ajax({
+                 url: url_y[k],
+                 type: 'get',
+                 success: function(res1) {
+                    data=res1;
+                    console.log('y',data);   
+                    var option;
+                  
+
+                    if(k!=3){
+                         option = {
+                    tooltip: {
+                    position: 'top'
+                    },
+                    title: [],
+                    singleAxis: [],
+                    series: [],
+                    textStyle: {              
+                    //标题颜色
+                    color: '#FFFFFF'
+                    }
+                    };
+
+                    side.forEach(function (day, idx) {
+                    option.title.push({
+                    textStyle: {              
+                    //标题颜色
+                    color: '#FFFFFF'
+                    },
+                    textBaseline: 'middle',
+                    top: (idx + 0.5) * 100 / 4 + '%',
+                    text: day
+                    });
+                    option.singleAxis.push({
+                    left: 150,
+                    type: 'category',
+                    boundaryGap: false,
+                    data: xData,
+                    top: (idx * 100 / 4 + 5) + '%',
+                    height: (100 / 4 - 10) + '%',
+                    axisLabel: {
+                        interval: 1
+                    }
+                    });
+
+                    option.series.push({
+                    singleAxisIndex: idx,
+                    coordinateSystem: 'singleAxis',
+                    type: 'scatter',
+                    data: [],
+                    symbolSize: function (dataItem) {
+                        return dataItem[1]/120;
+                    }
+                    });
+                    });
+
+                    data.forEach(function (dataItem) {
+                    option.series[dataItem[0]].data.push([dataItem[1], dataItem[2]]);
+                    });
+
+                    }
+                    else{
+                        option = {
+                        tooltip: {
+                            position: 'top'
+                        },
+                        title: [],
+                        singleAxis: [],
+                        series: [],
+                        textStyle: {              
+                            //标题颜色
+                            color: '#FFFFFF'
+                            }
+                    };
+
+                    side.forEach(function (day, idx) {
+                        option.title.push({
+                            textStyle: {              
+                            //标题颜色
+                            color: '#FFFFFF'
+                            },
+                            textBaseline: 'middle',
+                            top: (idx + 0.5) * 100 / 4 + '%',
+                            text: day
+                        });
+                        option.singleAxis.push({
+                            left: 150,
+                            type: 'category',
+                            boundaryGap: false,
+                            data: xData,
+                            top: (idx * 100 / 4 + 5) + '%',
+                            height: (100 / 4 - 10) + '%',
+                            axisLabel: {
+                                interval: 2
+                            }
+                        });
+                        option.series.push({
+                            singleAxisIndex: idx,
+                            coordinateSystem: 'singleAxis',
+                            type: 'scatter',
+                            data: [],
+                            symbolSize: function (dataItem) {
+                                return dataItem[1]/20;
+                            }
+                        });
+                    });
+
+                    data.forEach(function (dataItem) {
+                        option.series[dataItem[0]].data.push([dataItem[1], dataItem[2]]);
+                    });
+
+
+                    }
+                    
+                   
+                    if (option && typeof option === 'object') {
+                    myChart.setOption(option);
+                    }
+            }
+           });        
+        }
+    });
+}
+            
+        
+
+</script>
+</body>
+</html>
