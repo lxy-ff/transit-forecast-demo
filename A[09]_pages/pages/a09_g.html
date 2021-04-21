@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!-- 引入 echarts.js -->
+    <link rel="stylesheet" href="../src/css/layui.css">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+
+
+</head>
+<style>
+    body{padding: 10px;}
+    </style>
+<body>
+
+
+<form id="a" class="layui-form layui-form-pane1" action="" lay-filter="first">
+  
+<div class="select"> 
+    <div class="layui-input-inline">
+        <div class="layui-form-item">
+           <div class="layui-input-block" style="width:40%;">
+            <div class="layui-bg-black">
+                <select name="select" lay-filter="select">
+                    <option value="-1">请选择</option>
+                    <option value="0">一号线</option>
+                    <option value="1">二号线</option>
+                    <option value="2">三号线</option>
+                    <option value="3">四号线</option>
+                    <option value="4">五号线</option>
+                    <option value="5">十号线</option>
+                    <option value="6">十一号线</option>
+                    <option value="7">十二号线</option>
+          </select>
+
+    </div>
+</div>
+         </div>
+    </div>
+</div>
+
+    </form>
+    <div class="layui-form-item">
+        <div class="layui-input-inline">
+            <div id="container" style="height:360%;width:300%;margin-left: 70%;"></div>
+        </div>
+        <div class="layui-input-inline">
+            <div id="container2" style="height:360%;width:300%;margin-left: 250%;"></div>
+        </div>
+
+    </div>
+    <div class="text">
+        <li style="color: aliceblue;width: 80%;margin-left: 10%;">
+            <blockquote class="layui-elem-quote" style="line-height:30px;">
+                呈现某条线路的上行与下行断面客流柱状图，且得出：同一线路的上行断面客流量与下行断面客流量起伏特性相似，同一条流线相连的断面间客流具有一定的连续性。不同流线由于服务的主要人群不同，存在较大差异。
+        </blockquote> 
+       </li>
+    </div>
+        
+       
+   
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.js"></script>
+    <script src="../src/layui.js"></script>
+<script>
+     var url_x=new Array();//站点
+    var url_y1=new Array();//上行人数
+    var url_y2=new Array();//下行人数
+     for(var j=0;j<8;j++){ 
+             url_x[j]="../../json/g/s_name"+String(j+1)+".json";
+             url_y1[j]="../../json/g/up"+String(j+1)+".json";
+             url_y2[j]="../../json/g/down"+String(j+1)+".json";
+    }
+    
+
+        console.log('url_',url_x);
+     
+var chartDom = document.getElementById('container');
+var myChart = echarts.init(chartDom);
+
+var chartDom2 = document.getElementById('container2');
+var myChart2 = echarts.init(chartDom2);
+
+      layui.use(['form', 'layedit', 'laydate'], function(){
+                var form = layui.form,
+                    table=layui.table,
+                    $=layui.jquery;
+            // 让绑定在select的change事件触发
+             form.on('select(select)', function(data){   
+                var val=data.value;
+                console.info(val); 
+                _ajax(val);
+             })   
+
+           var data;
+             function _ajax(k) {
+            $.ajax({
+                url: url_x[k],
+                type: 'get',
+                success: function(res) {
+                    data=res;
+                    console.log('x',data);
+                    $.ajax({
+                        url: url_y1[k],
+                        type: 'get',
+                        success: function(res1) {
+                            up=res1;
+                            var option;
+                            $.ajax({
+                                url:url_y2[k],
+                                type:'get',
+                                success:function(res2){
+                                    down=res2;
+                                    var option2;
+                                    option2={
+                                        title: {
+                                    text: '下行断面客流量',
+                                    textStyle:{
+                                    color:"#fff"
+                                        }
+                                    },
+                                        xAxis: {
+                                            type: 'category',
+                                            data: data,
+                                            axisLabel:{//修改坐标系字体颜色
+                                                show:true,
+                                                    textStyle:{
+                                                        color:"#fff"
+                                                    }
+                                            },
+                                                                    },
+                                        tooltip: {},
+                                        yAxis: {
+                                            type: 'value',
+                                            axisLabel:{//修改坐标系字体颜色
+                    show:true,
+                        textStyle:{
+                            color:"#fff"
+                        }
+                },
+                                        },
+                                        series: [{
+                                            data: down,
+                                            type: 'bar',
+                                            showBackground: true,
+                                            itemStyle:{
+                                                  normal:{
+                                                        color:'#FD665F'
+                                                     }
+                                             },
+                                            backgroundStyle: {
+                                                color: 'rgba(180, 180, 180, 0.2)'
+                                            }
+                                        }]
+                                    };
+
+                                    option2 && myChart2.setOption(option2);
+                                }
+                            })
+                                                    
+                            option = {
+                                title: {
+                                    text: '上行断面客流量',
+                                    textStyle:{
+                                    color:"#fff"
+                }
+            },
+                                xAxis: {
+                                    type: 'category',
+                                    data: data,
+                                    axisLabel:{//修改坐标系字体颜色
+                    show:true,
+                        textStyle:{
+                            color:"#fff"
+                        }
+                },
+                                },
+                                tooltip: {},
+                                yAxis: {
+                                    type: 'value',
+                                    axisLabel:{//修改坐标系字体颜色
+                    show:true,
+                        textStyle:{
+                            color:"#fff"
+                        }
+                },
+                                },
+                                series: [{
+                                    data: up,
+                                    type: 'bar',
+                                    showBackground: true,
+                                    backgroundStyle: {
+                                        color: 'rgba(180, 180, 180,0.1)'
+                                    }
+                                }]
+                            };
+
+
+                            option && myChart.setOption(option);
+
+
+                        }
+                    })
+                }
+
+})
+           
+        
+         }    
+        
+})
+
+</script>
+</body>
+</html>

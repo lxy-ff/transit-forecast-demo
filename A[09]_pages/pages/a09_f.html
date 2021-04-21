@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!-- 引入 echarts.js -->
+    <link rel="stylesheet" href="../src/css/layui.css">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+
+
+</head>
+<style>
+    body{padding: 10px;}
+    </style>
+<body>
+
+<form id="a" class="layui-form layui-form-pane1" action="" lay-filter="first">
+  <div class="layui-form-item">
+  <div class="layui-input-inline">
+           <div class="layui-input-block" style="width:60%;">
+            <div class="layui-bg-black">
+                <select name="select" lay-filter="select">
+                    <option value="-1">请选择</option>
+                    <option value="0">sta1-sta17</option>
+                    <option value="1">sta18-sta34</option>
+                    <option value="2">sta35-sta51</option>
+                    <option value="3">sta52-sta68</option>
+                    <option value="4">sta69-sta85</option>
+                    <option value="5">sta86-sta102</option>
+                    <option value="6">sta103-sta119</option>
+                    <option value="7">sta120-sta136</option>
+                    <option value="8">sta137-sta153</option>
+                    <option value="9">sta154-sta168</option>
+          </select>
+
+    </div>
+        
+    </div>
+
+</div>
+
+
+
+<div class="layui-input-inline">
+    <div class="text">
+    <li style="color: aliceblue;width: 1000%;margin-left: -30%;">
+        <blockquote class="layui-elem-quote" style="line-height:30px;">
+            呈现所有线路中乘客在任意两站上/下车的笛卡尔坐标系上的热力图，根据横、纵坐标确定要查看的站点OD，红色、橙色为乘客热门出行线路，黄色为常规出行线路，灰色为普通出行线路。
+    </blockquote> 
+   </li>
+</div>
+   
+</div>
+    
+</div>
+  
+
+    </form>
+    
+
+            
+        <div id="container" style="height:300%;width:500%;margin-left: -40%;"></div>
+
+       
+
+   
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.js"></script>
+    <script src="../src/layui.js"></script>
+<script>
+     var url_x=new Array();
+    var url_y=new Array();
+     for(var j=0;j<8;j++){ 
+             url_x[j]="../../json/s"+String(j+1)+".json";
+             url_y[j]="../../json/y"+String(j+1)+".json";
+    }
+    
+
+    var sta1 = [];
+    var sta2_1 = [];
+
+    for (var i = 0; i < 168; i++) {
+    sta1.push(i+1);
+}
+        console.log('url_',url_x);
+     var myChart = echarts.init(document.getElementById('container'),'dark');
+     
+      layui.use(['form', 'layedit', 'laydate'], function(){
+                var form = layui.form,
+                    table=layui.table,
+                    $=layui.jquery;
+            // 让绑定在select的change事件触发
+             form.on('select(select)', function(data){   
+                var val=data.value;
+                console.info(val); 
+                _ajax(val);
+             })   
+
+           var data;
+             function _ajax(k) {
+            $.ajax({
+                url: url_x[k],
+                type: 'get',
+                success: function(res) {
+                    data=res;
+                    console.log('x',data);
+                    $.ajax({
+                        url: url_y[k],
+                        type: 'get',
+                        success: function(res1) {
+                            sta2_1=res1;
+                            console.log('y',sta2_1);   
+                            var option;
+                            data = data.map(function (item) {
+                                    if (item[2]<10) item[2]=0
+                                     return [item[1], item[0], item[2] || '-'];
+                            });
+
+                            option = {
+                                tooltip: {
+                                    position: 'top'
+                                },
+                                textStyle: {              
+                                    //标题颜色
+                                    color: '#FFFFFF'
+                                },
+                                grid: {
+                                    height: '80%',
+                                    width:'50%',
+                                    top: '10%'
+                                },
+                                xAxis: {
+                                    type: 'category',
+                                    data:sta1 ,
+                                    splitArea: {
+                                        show: true
+                                    }
+                                },
+                                yAxis: {
+                                    type: 'category',
+                                    data:sta2_1 ,
+                                    splitArea: {
+                                        show: true
+                                    }
+                                },
+                                visualMap: {
+                                   
+                                    min: 0,
+                                    max: 500,
+                                    calculable: true,
+                                   
+                                  
+                                  
+                                },
+                                series: [{
+                                    name: '人数',
+                                    type: 'heatmap',
+                                    data: data,
+                                    label: {
+                                        fontSize:'5',
+                                        show: true
+                                    },
+                                    
+                                    emphasis: {
+                                        itemStyle: {
+                                            shadowBlur: 10,
+                                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                        }
+                                    }
+                                }]
+                            };
+
+                            if (option && typeof option === 'object') {
+                                myChart.setOption(option);
+                            }
+
+
+
+                        }
+                    })
+                }
+
+})
+           
+        
+         }    
+        
+})
+
+</script>
+</body>
+</html>

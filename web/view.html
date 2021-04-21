@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!-- 引入 echarts.js -->
+    <link rel="stylesheet" href="view.css" />
+
+</head>
+<body>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="main" style="width: 600px;height:400px;" ></div>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.js"></script>
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+        var x_json;
+        var y_json;
+ function readJSON(file, callback) {
+    let ajax = new XMLHttpRequest();
+    ajax.overrideMimeType("application/json");
+    ajax.open("GET", file, true);
+    ajax.onreadystatechange = function() {
+        if (ajax.readyState === 4 && ajax.status == "200") {
+            callback(ajax.responseText);
+        }
+    }
+    ajax.send(null);
+}
+
+
+readJSON("../pythonproject/x.json", function(res){
+    var data = JSON.parse(res);
+    console.log(data);
+   x_json=data;
+readJSON("../pythonproject/y.json", function(res){
+    var data = JSON.parse(res);
+    console.log(data);
+   y_json=data;
+
+// 指定图表的配置项和数据
+        var option = {
+
+            title: {
+                text: '年龄结构',
+                textStyle:{
+		            color:"#fff"
+	            }
+            },
+            tooltip: {},
+            legend: {
+                data:['人数'],
+	        textStyle:{
+			    color:"#fff"
+		    }
+           },
+            xAxis: {
+                data: x_json,
+                axisLabel:{//修改坐标系字体颜色
+		show:true,
+		textStyle:{
+		  color:"#fff"
+		}
+	  },
+
+            },
+            yAxis: {
+                axisLabel:{//修改坐标系字体颜色
+		show:true,
+		textStyle:{
+		  color:"#fff"
+		}
+	  },
+
+
+            },
+            series: [{
+                itemStyle: {
+            normal: {
+                color:'#4992ff',
+　　　　　　　　//这里是重点
+               
+            }
+        },
+                name: '人数',
+                type: 'bar',
+                data: y_json
+            }]
+
+
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+
+
+
+});
+});
+
+
+
+
+    </script>
+</body>
+</html>

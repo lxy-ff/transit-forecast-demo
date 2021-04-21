@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!-- 引入 echarts.js -->
+    <link rel="stylesheet" href="../src/css/layui.css">
+    
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+
+
+</head>
+<style>
+    body{padding: 10px;}
+    </style>
+<body>
+
+
+<form id="a" class="layui-form layui-form-pane1" action="" lay-filter="first" style="margin-left: 35%;">
+  
+<div class="select"> 
+    <div class="layui-input-inline" >
+        <div class="layui-form-item">
+             <div class="layui-input-block" style="width:40%;">
+            <div class="layui-bg-black">
+            <select name="select1" lay-filter="select1">
+                <option value="-1">请选择</option>
+            <option value="9">进站</option>
+            <option value="10">出站</option>
+          </select>
+        </div>
+      </div>
+        </div>
+    </div>
+    <div class="layui-input-inline">
+        <div class="layui-form-item">
+           <div class="layui-input-block" style="width:45%;">
+            <div class="layui-bg-black">
+                <select name="select" lay-filter="select">
+                    <option value="-1">请选择</option>
+                    <option value="0">行政区1</option>
+                    <option value="1">行政区2</option>
+                    <option value="2">行政区3</option>
+                    <option value="3">行政区4</option>
+                    <option value="4">行政区5</option>
+                    <option value="5">行政区6</option>
+                    <option value="6">行政区7</option>
+                    <option value="7">行政区8</option>
+                    <option value="8">行政区10</option>
+          </select>
+
+    </div>
+</div>
+         </div>
+    </div>
+</div>
+
+    </form>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div class="layui-form-item">
+        <div class="layui-input-inline">
+            
+            <div id="main" style="width: 550px;height:400px;margin-left: 30%;" ></div>
+        </div>
+        <div class="layui-input-inline">
+            <div id="container" style="width: 550px;height:400px;margin-left: 230%;margin-top: 1%;" ></div>
+        </div>
+       
+    
+    </div>
+    
+
+
+    <div class="text">
+        <li style="color: aliceblue;width: 80%;margin-left: 10%;">
+            <blockquote class="layui-elem-quote" style="line-height:30px;">选定某行政区，查看该行政区的进出站乘客情况，可明了的看到乘客的年龄结构柱状图，20-29岁的用户最多且不可超越，然后依次是30-39岁，40-49岁，50-59岁的用户。青年人在轨道出行中占有重要的地位。不同行政区，各年龄占比不同，可考虑：该行政区有大型商圈、大型办公区、大学城、老城区等情况。
+        </blockquote> 
+       </li>
+    </div>
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.js"></script>
+    <script src="../src/layui.js"></script>
+<script>
+    var url_in=new Array();
+    var url_out=new Array();
+    var url_=new Array();
+    for(var k=0;k<2;k++){ //一维长度为i,i为变量，可以根据实际情况改变
+        url_[k]=new Array(); //声明二维，每一个一维数组里面的一个元素都是一个数组；       
+    } 
+     for(var j=0;j<9;j++){ 
+             url_[1][j]="../../json/d_in_"+String(j+1)+".json";
+    }
+    for(var j=0;j<9;j++){ 
+          url_[0][j]= "../../json/d_out_"+String(j+1)+".json"; 
+    }
+        console.log('url_',url_);
+    var myChart = echarts.init(document.getElementById('main'));
+
+      layui.use(['form', 'layedit', 'laydate'], function(){
+           
+        var form = layui.form,
+            table=layui.table,
+            $=layui.jquery;
+       // 让绑定在select的change事件触发
+       form.on('select(select1)', function(data1){ 
+            var val1=data1.value;
+            console.info(val1); 
+           form.on('select(select)', function(data){   
+            var val=data.value;
+            console.info(val); 
+             _ajax(val1,val);
+            })
+       })
+        
+
+  })
+   function _ajax(j,len) {console.log(len),
+    $.ajax({
+        url: url_[10-j][len],
+        type: 'get',
+        success: function(res) {
+            var xData = ["0-9", "10-19", "20-29", "30-39", "40-49", "50-59", "60-69", "70-79", "80-89", "90-99"];
+            var yData;
+            yData=res;
+            console.log('y',yData);
+  
+  
+
+
+
+
+  //画图
+            var option = {
+
+              
+            
+                    tooltip: {},
+                        legend: {
+                            data:['人数'],
+                            textStyle:{
+                            color:"#fff"
+                    }
+                },
+                xAxis: {
+                    data: xData ,
+                    axisLabel:{//修改坐标系字体颜色
+                    show:true,
+                        textStyle:{
+                            color:"#fff"
+                        }
+                },
+
+                },
+                yAxis: {
+                    axisLabel:{//修改坐标系字体颜色
+                        show:true,
+                        textStyle:{
+                        color:"#fff"
+                }
+                },
+
+
+                },
+                series: [{
+                    itemStyle: {
+                normal: {
+                    color:'#4992ff',        　　　
+                
+                }
+                },
+                    name: '人数',
+                    type: 'bar',
+                    data: yData
+                }]
+
+
+                };
+  // 使用刚指定的配置项和数据显示图表。
+                myChart.setOption(option);
+
+
+
+
+
+var chartDom2 = document.getElementById('container');
+var myChart2 = echarts.init(chartDom2);
+var option2;
+option2 = {
+    tooltip: {
+        trigger: 'item'
+    },
+    legend: {
+        top: '5%',
+        left: 'center',
+        textStyle:{
+			color:"#fff"
+		}
+    },
+    series: [
+        {
+            name: '年龄结构',
+            type: 'pie',
+            radius: ['40%', '70%'],
+            avoidLabelOverlap: false,
+            itemStyle: {
+                borderRadius: 10,
+                borderColor: '#fff',
+                borderWidth: 2
+            },
+            label: {
+                show: false,
+                position: 'center'
+            },
+            emphasis: {
+                label: {
+                    show: true,
+                    fontSize: '40',
+                    fontWeight: 'bold'
+                }
+            },
+            labelLine: {
+                show: false
+            },
+            data: [
+                {value: yData[0], name: xData[0],itemStyle:{color:"#4992ff"}},
+                {value: yData[1], name: xData[1],itemStyle:{color:"#4992ff"}},
+                {value: yData[2], name: xData[2],itemStyle:{color:"#7cffb2"}},
+                {value: yData[3], name: xData[3],itemStyle:{color:"#fddd60"}},
+                {value: yData[4], name: xData[4],itemStyle:{color:"#ff6e76"}},
+                {value: yData[5], name: xData[5],itemStyle:{color:"#58d9f9"}},
+                {value: yData[6], name: xData[6],itemStyle:{color:"#05c091"}},
+                {value: yData[7], name: xData[7],itemStyle:{color:"#ff8a45"}},
+                {value: yData[8], name: xData[8],itemStyle:{color:"#8d48e3"}},
+                {value: yData[9], name: xData[9],itemStyle:{color:"#dd79ff"}},
+            ]
+        },
+        
+
+    ],
+    itemStyle: {
+        normal:{
+                                    color:function(params) {
+                                    //自定义颜色
+                                    var colorList = [          
+                                  "#4992ff","#7cffb2","#fddd60","#ff6e76","#58d9f9","#05c091","#ff8a45","#8d48e3","#dd79ff"
+                                        ];
+                                        return colorList[params.dataIndex]
+                                     }
+                                }
+       },
+};
+
+option2 && myChart2.setOption(option2);
+                            
+               
+           
+        }
+    });
+}
+            
+        
+
+</script>
+</body>
+</html>

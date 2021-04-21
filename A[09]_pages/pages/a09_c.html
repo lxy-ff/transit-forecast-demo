@@ -1,0 +1,147 @@
+
+<!--
+    THIS EXAMPLE WAS DOWNLOADED FROM https://echarts.apache.org/examples/zh/editor.html?c=bar-animation-delay
+-->
+<!DOCTYPE html>
+<html style="height: 100%">
+    <head>
+        <meta charset="utf-8">
+    </head>
+    <link rel="stylesheet" href="../src/css/layui.css">
+    <body style="height: 100%; margin: 0">
+        <div id="container" style="height: 70%">
+        
+        
+        </div>
+        <div class="text">
+            <li style="color: aliceblue;width: 80%;margin-left: 10%;margin-top: 2%;">
+                <blockquote class="layui-elem-quote" style="line-height:30px">
+                    此正负交错折线图中清晰呈现了各个站点的出入站总客流量，各站点的入站与出站客流量差距不大，但在站点134入站客流量比出站大很多，考虑因素为此站可能是大的换乘站点。不同站点的出入量可能差距很大，其中,站点126客流量最大，站点63第二，站点89第三。需重点观测这4个站点的客流变化。
+            </blockquote> 
+           </li>
+        </div>
+
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+
+        <script type="text/javascript">
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+
+var option;
+
+
+
+var xAxisData = [];
+var data1 = [5235,1234,1546,1879,14575,760,1051,930,12036,379,1066,3761,1238,2410,4179,1488,6076,863,448,14510,1789,4946,10116,
+219,4545,2060,3437,4597,4779,14595,4286,2732,659,2860,3472,1780,3028,477,2787,12771,6617,5699,1183,3190,344,3626,
+12481,2630,9323,1454,736,1764,2314,6955,4681,6993,876,173,1620,1074,5682,499,32239,4212,6869,1377,11376,3545,4946,
+4611,789,4237,1353,6028,1138,3841,884,1806,5943,4211,10449,1821,4711,3585,3100,6143,6758,8143,32809,4473,1905,2586,
+2219,2333,5720,1386,2972,5191,5118,6880,1862,216,1274,6900,501,1401,14326,15370,2618,8499,1527,2197,1747,5988,18189,
+68,1648,9386,2242,4590,3500,5519,5958,1551,2791,37794,11805,1130,16917,3856,4136,3983,1533,26232,5923,5728,3373,
+4251,1620,906,6658,6395,2122,3198,741,7465,883,2262,2953,567,2155,681,1103,4718,3507,2515,3135,4245,3532,3927,1470,
+8894,1918,361,300,636,3889,3490];
+var data2 = [-5534,-1315,-2762,-1982,-14979,-965,-1017,-693,-11115,-351,-1060,-3019,-1128,-2617,-3774,-1414,-6130,-904,-468,-14987,-1695,
+-4665,-10119,-206,-4311,-2150,-3113,-4460,-4605,-16071,-3946,-2554,-578,-2820,-3734,-1737,-3262,-483,-2509,-12017,-6346,-6073,
+-1247,-3044,-281,-4705,-13084,-1932,-9714,-1324,-780,-1753,-2281,-6867,-4784,-7309,-759,-167,-1565,-1024,-6083,-442,-36118,
+-4166,-6561,-1365,-11369,-3406,-4972,-4153,-922,-4695,-1351,-5932,-1047,-3851,-817,-1971,-6286,-3788,-11034,-1687,-4157,-3828,
+-3109,-6583,-6710,-8765,-34041,-4810,-1771,-2514,-2009,-2669,-5100,-1164,-2697,-5318,-5155,-6949,-1805,-274,-1348,-6898,-476,
+-1287,-13826,-16135,-3063,-8340,-1527,-1810,-1848,-6243,-18748,-82,-1555,-8753,-2085,-4306,-3491,-5587,-5924,-1677,-2841,-41031,
+-12720,-1024,-16123,-3647,-4252,-3908,-1302,-18054,-6305,-5674,-3281,-4379,-1419,-1042,-6843,-6141,-2065,-2813,-788,-7062,-796,
+-2031,-2837,-609,-1981,-795,-913,-4570,-3420,-2690,-3362,-4526,-3936,-3631,-1790,-8592,-1448,-370,-333,-557,-3764,-3589
+];
+for (var i = 0; i < 168; i++) {
+    xAxisData.push(i+1);
+}
+
+option = {
+    legend: {
+        textStyle: {              
+        //标题颜色
+    	color: '#FFFFFF'
+  	},
+        data: ['入站', '出站']
+    },
+    toolbox: {
+        // y: 'bottom',
+        feature: {
+            magicType: {
+                type: ['stack', 'tiled']
+            },
+            dataView: {
+
+                readOnly: false,
+                backgroundColor: "rgba(35, 38, 46, 1)",
+                textareaColor: "rgba(35, 38, 46, 1)",
+                textareaBorderColor: "rgba(255, 255, 255, 1)",
+                buttonColor: "rgba(36, 183, 237, 1)",
+                textColor: "rgba(255, 255, 255, 1)"
+            },
+            saveAsImage: {
+                pixelRatio: 2
+            }
+        }
+    },
+    tooltip: {},
+    xAxis: {
+        data: xAxisData,
+        splitLine: {
+            show: false
+        },
+        
+    },
+    yAxis: {
+    },
+    series: [{
+        name: '入站',
+        type: 'bar',
+        color:'#4992ff',
+        data: data1,
+        emphasis: {
+            focus: 'series'
+        },
+        animationDelay: function (idx) {
+            return idx * 10;
+        }
+    }, {
+        name: '出站',
+        type: 'bar',
+        color:'#7cffb2',
+        data: data2,
+        emphasis: {
+            focus: 'series'
+        },
+        animationDelay: function (idx) {
+            return idx * 10 + 100;
+        }
+    }],
+    animationEasing: 'elasticOut',
+    animationDelayUpdate: function (idx) {
+        return idx * 5;
+    },
+    textStyle: {              
+        //标题颜色
+    	color: '#FFFFFF'
+  	},
+};
+
+if (option && typeof option === 'object') {
+    myChart.setOption(option);
+}
+
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+
+var option;
+
+
+
+
+
+
+        </script>
+    </body>
+
+</html>
+    
