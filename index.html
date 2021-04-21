@@ -1,0 +1,118 @@
+ 
+ 
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>layout 大布局 - Layui</title>
+<link rel="stylesheet" href="A[09]_pages/src/css/layui.css">
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.js"></script>
+    <script src="A[09]_pages/src/layui.js"></script>
+</head>
+<body class="layui-layout-body">
+  <div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+      <div class="layui-logo-2">【A09】轨道交通智慧客流分析预测</div>
+    </div>
+      <!--2.左侧导航-->
+      <div class="layui-side layui-bg-black">
+          <div class="layui-side-scroll">
+              <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+              <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                  <li class="layui-nav-item leftdaohang" data-url="A[09]_pages/pages/a09_a.html" mytitle="单月整体的客流波动分析"><a>单月整体的客流波动分析</a></li>
+                  <li class="layui-nav-item leftdaohang" data-url="A[09]_pages/pages/a09_b.html" mytitle="工作日和周末的客流分析"><a>工作日和周末的客流分析</a></li>
+                  <li class="layui-nav-item leftdaohang" data-url="A[09]_pages/pages/a09_c.html" mytitle="单站的点出/入站客流分析"><a>单站的点出/入站客流分析</a></li>
+                  <li class="layui-nav-item leftdaohang" data-url="A[09]_pages/pages/a09_d.html" mytitle="用户年龄结构分析"><a>用户年龄结构分析</a></li>
+                  <li class="layui-nav-item leftdaohang" data-url="A[09]_pages/pages/a09_e.html" mytitle="早晚高峰客流站点分布分析"><a>早晚高峰客流站点分布分析</a></li>
+                  <li class="layui-nav-item leftdaohang" data-url="A[09]_pages/pages/a09_f.html" mytitle="站点OD客流量分析"><a>站点OD客流量分析</a></li>
+                  <li class="layui-nav-item leftdaohang" data-url="A[09]_pages/pages/a09_g.html" mytitle="线路断面客流量分析"><a>线路断面客流量分析</a></li>
+                  <li class="layui-nav-item leftdaohang" data-url="A[09]_pages/pages/a09_h.html" mytitle="数据分析预测"><a>数据预测分析</a></li>
+              </ul>
+          </div>
+      </div>
+
+      
+    
+
+      <!--3.右侧主体内容区-->
+      <div class="layui-body">
+          <!--tabs标签-->
+          <div class="layui-tab layui-tab-brief" lay-filter="demo" >
+              <ul class="layui-tab-title">
+              </ul>
+              <div class="layui-tab-content">
+              </div>
+          </div>
+      </div>
+
+      <!--
+         <div class="layui-footer">
+        </div>
+      -->
+     
+          <!-- 底部固定区域 -->
+      
+  </div>
+  <script>
+    layui.use('element', function() {
+        var $ = layui.jquery,
+            element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
+        //触发事件
+        var active = {
+            tabAdd: function() {
+                //新增一个Tab项
+                var htmlurl = $(this).attr('data-url');
+                var mytitle = $(this).attr('mytitle');
+                //                  alert("触发tab增加事件："+mytitle);
+                //先判断是否已经有了tab
+                var arrayObj = new Array(); //创建一个数组  
+                $(".layui-tab-title").find('li').each(function() {
+                    var y = $(this).attr("lay-id");
+                    arrayObj.push(y);
+                });
+                //                    alert("遍历取到的数组："+arrayObj);
+                var have = $.inArray(mytitle, arrayObj); //返回 3,
+                if (have >= 0) {
+                    //tab已有标签
+                    //                        alert("遍历的已有标签："+mytitle);
+                    element.tabChange('demo', mytitle); //切换到当前点击的页面
+                } else {
+                    //没有相同tab
+                    //                      alert("遍历的没有相同tab："+mytitle);
+                    element.tabAdd('demo', {
+                        title: mytitle //用于演示
+                            ,
+                        content: '<iframe style="width: 100%;height:100%;" frameborder="0" scrolling="yes" src=' + htmlurl +
+                            ' ></iframe>',
+                        id: mytitle //实际使用一般是规定好的id，这里以时间戳模拟下
+                    })
+
+                    element.tabChange('demo', mytitle); //切换到当前点击的页面
+                    FrameWH(); //计算框架高度
+                }
+            }
+
+        };
+        function FrameWH() {
+            var h = $(window).height() - 41 - 10 - 60 - 10 - 44 - 10;
+            $("iframe").css("height", h + "px");
+        }
+
+        $(window).resize(function() {
+            FrameWH();
+        })
+
+        $(".leftdaohang").click(function() {
+            var type = "tabAdd";
+            var othis = $(this);
+            //                var htmlurl=$(this).attr('data-url');
+            //                var mytitle=$(this).attr('mytitle');
+            active[type] ? active[type].call(this, othis) : '';
+        });
+
+    });
+</script>
+
+</html>
